@@ -11,9 +11,9 @@ class RedisClient
 {
     private $redis;
 
-    public function __construct($host, $port)
+    public function __construct($host, $port, $password = null)
     {
-        $this->redis = new Redis($host, $port);
+        $this->redis = new Redis($host, $port, $password);
     }
 
     public function set($key, $value)
