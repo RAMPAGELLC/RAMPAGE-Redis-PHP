@@ -11,10 +11,13 @@ class Redis
 {
     private $socket;
 
-    public function __construct($host, $port)
+    public function __construct($host, $port, $password = null)
     {
         try {
             $this->connect($host, $port);
+            if ($password !== null) {
+                $this->authenticate($password);
+            }
         } catch (Exception $e) {
             throw new Exception("Unable to connect to Redis server: " . $e->getMessage());
         }
@@ -26,6 +29,15 @@ class Redis
 
         if (!$this->socket) {
             throw new Exception("Unable to connect to Redis server: $errstr ($errno)");
+        }
+    }
+
+    private function authenticate($password)
+    {
+        $response = $this->sendCommand('AUTH', [$password]);
+
+        if ($response !== '+OK') {
+            throw new Exception('Authentication failed');
         }
     }
 
@@ -45,7 +57,7 @@ class Redis
 
     private function buildCommandString($command, $params)
     {
-        $commandString = "*".(count($params) + 1)."\r\n";
+        $commandString = "*" . (count($params) + 1) . "\r\n";
         $commandString .= "$command\r\n";
 
         foreach ($params as $param) {
