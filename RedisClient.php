@@ -7,6 +7,8 @@
   Repository: https://github.com/RAMPAGELLC/RAMPAGE-Redis-PHP
 */
 
+require("Redis.php");
+
 class RedisClient
 {
     private $redis;
